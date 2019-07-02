@@ -2,7 +2,6 @@
 
 #### create react
 
-cd spring-react/src/main
 npx create-react-app frontend
 
 #### npm 실행
