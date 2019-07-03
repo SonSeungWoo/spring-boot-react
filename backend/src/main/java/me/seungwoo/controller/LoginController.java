@@ -9,9 +9,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -32,6 +31,8 @@ public class LoginController {
 
     private final AccountRepository accountRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @GetMapping("/token")
     public ResponseEntity<String> login(@ModelAttribute Account account, HttpServletRequest request) {
         Authentication authentication = authenticationManager.authenticate(
@@ -42,6 +43,22 @@ public class LoginController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication);
         return ResponseEntity.ok(jwt);
+    }
+
+    @PostMapping("/singUp/user")
+    public ResponseEntity<String> userSingUp(@RequestBody Account account){
+        account.setRoles(new String[]{"ROLE_USER"});
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        accountRepository.save(account);
+        return ResponseEntity.ok("USER JOIN SUCCESS");
+    }
+
+    @PostMapping("/singUp/admin")
+    public ResponseEntity<String> adminSingUp(@RequestBody Account account){
+        account.setRoles(new String[]{"ROLE_USER","ROLE_ADMIN"});
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        accountRepository.save(account);
+        return ResponseEntity.ok("USER JOIN SUCCESS");
     }
 
     @GetMapping("/users")
