@@ -2,6 +2,7 @@ package me.seungwoo.config;
 
 import me.seungwoo.jwt.JwtAuthenticationFilter;
 import me.seungwoo.service.UserDetailsServiceImpl;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -65,7 +66,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/users", "/token", "/singUp/*")
+                .antMatchers("/account*", "/token", "/singUp/*", "/swagger*/**")
                 .permitAll()
                 .antMatchers("/auth/**").hasRole("ADMIN");
         http
@@ -86,5 +87,10 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 }

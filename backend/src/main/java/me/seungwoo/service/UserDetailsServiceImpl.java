@@ -4,6 +4,7 @@ import me.seungwoo.domain.Account;
 import me.seungwoo.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,7 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (account == null) {
             throw new UsernameNotFoundException("Invalid username or password.");
         }
-        return new org.springframework.security.core.userdetails.User(account.getUsername(), account.getPassword(), AuthorityUtils.createAuthorityList(account.getRoles()));
+        return new User(account.getUsername(), account.getPassword(), AuthorityUtils.createAuthorityList(account.getRoles()));
     }
 
 }
